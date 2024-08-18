@@ -1,68 +1,129 @@
-import react from 'react'
-import HomeLayout from '../Layouts/HomeLayout';
+import { useState } from "react";
+import { toast } from "react-hot-toast";
 
-function Contact(){
+import axiosInstance from "../Helpers/axiosInstance";
+import { isEmail } from "../Helpers/regexMatcher";
+import HomeLayout from "../Layouts/HomeLayout";
+
+function Contact() {
+
+    const [userInput, setUserInput] = useState({
+        name: "",
+        email: "",
+        message: "",
+    });
+
+    function handleInputChange(e) {
+        const {name, value} = e.target;
+        setUserInput({
+            ...userInput,
+            [name]: value
+        })
+    } 
+
+    async function onFormSubmit(e) {
+        e.preventDefault();
+        if(!userInput.email || !userInput.name || !userInput.message) {
+            toast.error("All fields are mandatory");
+            return;
+        }
+
+        if(!isEmail(userInput.email)) {
+            toast.error("Invalid email");
+            return;
+        }
+
+        try {
+            const response = axiosInstance.post("/contact", userInput);
+            toast.promise(response, {
+                loading: "Submitting your message...",
+                success: "Form submitted successfully",
+                error: "Failed to submit the form"
+            });
+            const contactResponse = await response;
+            console.log(contactResponse)
+            if(contactResponse?.data?.success) {
+                setUserInput({
+                    name: "",
+                    email: "",
+                    message: "",
+                });
+            }
+        } catch (err) {
+            toast.error("operation failed....")
+        }
+
+    }
+
     return (
-       <HomeLayout>
-       <div className="flex items-center justify-center min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-8">
-        <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">Contact Me</h2>
-        <form
-          action="https://formspree.io/f/your-form-id" // Replace with your Formspree or other form handler URL
-          method="POST"
-          className="space-y-4"
-        >
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
+        <HomeLayout>
+            <div className="flex items-center justify-center h-[100vh]">
+                <form 
+                    noValidate
+                    onSubmit={onFormSubmit}
+                    className="flex flex-col items-center justify-center gap-2 p-5 rounded-md text-white shadow-[0_0_10px_black] w-[22rem]">
 
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
+                    <h1 className="text-3xl font-semibold">
+                        Contact Form
+                    </h1>
 
-          <div>
-            <label htmlFor="message" className="block text-sm font-medium text-gray-700">
-              Message
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              required
-              rows="4"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
+                    <div className="flex flex-col w-full gap-1">
+                        <label htmlFor="name" className="text-xl font-semibold">
+                            Name
+                        </label>
+                        <input 
+                            className="bg-transparent border px-2 py-1 rounded-sm"
+                            id="name"
+                            type="text"
+                            name="name"
+                            placeholder="Enter your name"
+                            onChange={handleInputChange}
+                            value={userInput.name}
+                        />
 
-          <div>
-            <button
-              type="submit"
-              className="w-full px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              Send Message
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-       </HomeLayout>
-    )
+                    </div>
+
+                    <div className="flex flex-col w-full gap-1">
+                        <label htmlFor="email" className="text-xl font-semibold">
+                            Email
+                        </label>
+                        <input 
+                            className="bg-transparent border px-2 py-1 rounded-sm"
+                            id="email"
+                            type="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            onChange={handleInputChange}
+                            value={userInput.email}
+                        />
+
+                    </div>
+
+                    <div className="flex flex-col w-full gap-1">
+                        <label htmlFor="message" className="text-xl font-semibold">
+                            Message
+                        </label>
+                        <textarea 
+                            className="bg-transparent border px-2 py-1 rounded-sm resize-none h-40"
+                            id="message"
+                            name="message"
+                            placeholder="Enter your email"
+                            onChange={handleInputChange}
+                            value={userInput.message}
+                        />
+
+                    </div>
+                    <button type="submit"
+                        className="w-full bg-yellow-600 hover:bg-yellow-500 transition-all ease-in-out duration-300 rounded-sm py-2 font-semibold text-lg cursor-pointer"
+                    >
+                        Submit
+                    </button>
+
+                </form>
+            </div>
+            
+        </HomeLayout>
+    );
 }
+
 export default Contact;
