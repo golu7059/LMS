@@ -12,6 +12,7 @@ import Contact from './Pages/Contact';
 
 import NotFound from './Pages/NotFound';
 import RequireAuth from './Components/Auth/ReuireAuth';
+import CreateCourse from './Pages/Course/CreateCourse';
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
         
         <Route element={<RequireAuth allowedRoles = {["ADMIN"]}/>} > 
         // child routes on which auth will be applied
+        <Route path='/course/create' element={<CreateCourse/>}/>
         </Route>
       </Routes> 
     </>
