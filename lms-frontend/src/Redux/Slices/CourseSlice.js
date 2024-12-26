@@ -20,6 +20,27 @@ export const getAllCourses = createAsyncThunk("/course/get",async() => {
     }
 })
 
+export const createCourse = createAsyncThunk("/course/create", async (userData) => {
+    try {
+        const res = axiosInstance.post("/courses/", userData);
+        toast.promise(res, {
+            loading: "Creating course, please wait...",
+            success: (data) => {
+                return data?.data?.message || "Course created successfully";
+            },
+            error: "Failed ! image size may be too large or something went wrong"
+        });
+        return (await res).data;
+    } catch (error) {
+        if (error.response?.data?.message === "Field value too long") {
+            toast.error("Image size too large");
+        } else {
+            toast.error(error.response?.data?.message || "Something went wrong! Try again later.");
+        }
+        throw error;
+    }
+});
+
 const courseSlice = createSlice({
     name: 'course',
     initialState,

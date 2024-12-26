@@ -1,12 +1,11 @@
 import { useSelector } from "react-redux";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 function RequireAuth({allowedRoles}){
- const {isLoggedin,Role} = useSelector((state) => state.auth);      // getting data
-
- return isLoggedin && allowedRoles.find((myRole) => myRole == role) ? (
+ const {isLoggedIn,role} = useSelector((state) => state.auth);      // getting data from auth slice of current user
+ return isLoggedIn && allowedRoles.find((myRole) => myRole == role) ? (
     <Outlet />
- ) : isLoggedin ?  (<Navigate to = "/denied"/>) : (<Navigate to = "Login"/>)
+ ) : isLoggedIn ?  (<Navigate to = "/denied"/>) : (<Navigate to = "Login"/>)
 }
 
 
