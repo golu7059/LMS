@@ -5,7 +5,7 @@ import axiosInstance from "../../Helpers/axiosInstance"
 const initialState = {
     isLoggedIn: localStorage.getItem('isLoggedIn') || false,
     role: localStorage.getItem('role') || "",
-    data: localStorage.getItem('data') !== null ? JSON.stringify(localStorage.getItem('data')) : { }
+    data: localStorage.getItem('data') !== null ? JSON.parse(localStorage.getItem('data')) : { }
 };
 
 export const createAccount = createAsyncThunk("/auth/register", async (data) => {
@@ -58,7 +58,7 @@ export const logout = createAsyncThunk("/user/logout", async () => {
 
 export const updateProfile = createAsyncThunk("/user/update/profile", async (data) => {
     try {
-        const res = axiosInstance.put(`auth/update/${data[0]}`, data[1]);
+        const res = axiosInstance.put(`auth/update`, data[1]);
         toast.promise(res, {
             loading: "Wait! profile update in progress...",
             success: (data) => {
@@ -77,10 +77,25 @@ export const getUserData = createAsyncThunk("/user/details", async () => {
         const res = axiosInstance.get("auth/me");
         return (await res).data;
     } catch(error) {
-        toast.error(error.message);
+        toast.error(error.response?.data.message);
     }
 })
 
+export const changePassword = createAsyncThunk("/user/changepassword", async (data) => {
+    try {
+        const res = axiosInstance.put("/auth/changepassword", data);
+        toast.promise(res, {
+            loading: "Updating password...",
+            success: (response) => {
+                return response?.data?.message || "Password changed successfully";
+            },
+            error: "Failed to update password"
+        });
+        return (await res).data;
+    } catch (error) {
+        toast.error(error?.response?.data?.message || "Unable to change the password right now");
+    }
+});
 
 const authSlice = createSlice({
     name: 'auth',
