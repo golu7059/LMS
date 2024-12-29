@@ -1,5 +1,5 @@
-import {AiFillCloseCircle} from 'react-icons/ai';
-import {FiMenu} from 'react-icons/fi';
+import { AiFillCloseCircle } from 'react-icons/ai';
+import { FiMenu } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -33,8 +33,9 @@ function HomeLayout({ children }) {
         e.preventDefault();
 
         const res = await dispatch(logout());
-        if(res?.payload?.success)
-        navigate("/");
+        if (res?.payload?.success) {
+            navigate("/");
+        }
     }
 
     return (
@@ -43,7 +44,7 @@ function HomeLayout({ children }) {
                 <input className="drawer-toggle" id="my-drawer" type="checkbox" />
                 <div className="drawer-content">
                     <label htmlFor="my-drawer" className="cursor-pointer relative">
-                        <FiMenu 
+                        <FiMenu
                             onClick={changeWidth}
                             size={"32px"}
                             className="font-bold text-white m-4"
@@ -123,7 +124,7 @@ function HomeLayout({ children }) {
                 </div>
             </div>
 
-            { children }
+            {children}
 
             <Footer />
         </div>
