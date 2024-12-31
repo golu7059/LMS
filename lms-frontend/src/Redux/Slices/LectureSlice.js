@@ -16,6 +16,7 @@ export const getcourseLecture = createAsyncThunk("/course/lecture/get", async (c
             },
             error: "Unable to fetch lectures of this course !"
         })
+        return (await res).data
     } catch (error) {
         toast.error(error.response?.data?.message || "unable to get the course lectures right now !");
     }
@@ -63,7 +64,18 @@ const lectureSlice = createSlice({
     name: "lecture",
     initialState,
     reducers: {},
-    extraReducers: (builder) => { }
+    extraReducers: (builder) => {
+        builder
+            .addCase(getcourseLecture.fulfilled, (state, action) => {
+                state.lectures = action?.payload?.lectures
+            })
+            .addCase(addCourseLecture.fulfilled,(state,action) => {
+                state.lectures = action?.payload?.course?.lectures
+            })
+            .addCase(deleteCourseLecture.fulfilled,(state,action) => {
+                state.lectures = action.payload?.course?.lectures
+            })
+    }
 }
 );
 
