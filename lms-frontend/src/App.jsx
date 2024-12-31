@@ -1,21 +1,28 @@
 import { Routes, Route } from "react-router-dom";
 
+import RequireAuth from "./Components/Auth/ReuireAuth";
+
 import Home from "./Pages/Home";
 import AboutUs from "./Pages/AboutUs";
+import Contact from "./Pages/Contact";
 
 import Signup from "./Pages/Signup";
 import Login from "./Pages/Login";
 
-import CourseList from "./Pages/Course/CourseList";
-import CourseDescription from "./Pages/Course/CourseDescription";
-import Contact from "./Pages/Contact";
 
-import NotFound from "./Pages/NotFound";
-import RequireAuth from "./Components/Auth/ReuireAuth";
-import CreateCourse from "./Pages/Course/CreateCourse";
 import UserProfile from "./Pages/user/UserProfile";
 import EditUserProfile from "./Pages/user/EditUserProfile";
 import ChangePassword from "./Pages/user/ChangePassword";
+
+import CourseList from "./Pages/Course/CourseList";
+import CourseDescription from "./Pages/Course/CourseDescription";
+import CreateCourse from "./Pages/Course/CreateCourse";
+
+import Checkout from "./Pages/Payment/Checkout";
+import CheckoutSuccess from "./Pages/Payment/CheckoutSuccess";
+import CheckoutFailed from "./Pages/Payment/CheckoutFailed";
+
+import NotFound from "./Pages/NotFound";
 
 function App() {
   return (
@@ -26,6 +33,11 @@ function App() {
         <Route path="/courses" element={<CourseList />} />
         <Route path="/courses" element={<Contact />} />
         <Route path="/course/description" element={<CourseDescription />} />
+        
+        <Route path="/checkout" element={<Checkout/>}/>
+        <Route path="/checkout/success" element={<CheckoutSuccess/>}/>
+        <Route path="/checkout/failed" element={<CheckoutFailed/>}/>
+
         <Route path="/contact" element={<Contact />} />
         
         <Route path="/user/profile" element = {<UserProfile/>} />
