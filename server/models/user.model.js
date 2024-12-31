@@ -37,6 +37,10 @@ const userSchema = new Schema(
         type: String,
       },
     },
+    subscription : {
+        id : String,
+        status : String
+    },
     role: {
       type: String,
       enum: ["USER", "ADMIN"],
@@ -58,6 +62,9 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
 userSchema.methods = {
   generateJWTToken: function () {
     return jwt.sign(

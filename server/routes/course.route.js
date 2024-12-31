@@ -14,7 +14,7 @@ const router = new Router();
 
 router
     .route("/")
-    .get(isLoggedIn,authorizedSubscriber, getAllCourses)
+    .get(isLoggedIn, getAllCourses)
     .post(isLoggedIn, authorizedRoles("ADMIN"), upload.single("thumbnail"), createCourse);
 router
     .route("/:id")

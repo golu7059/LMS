@@ -202,56 +202,52 @@ const resetPassword = async (req, res, next) => {
 };
 
 const changePassword = async (req, res, next) => {
+
   const { oldPassword, newPassword } = req.body;
   const { id } = req.user;
-  if (!oldPassword || !newPassword) {
+  
+  if (!oldPassword || !newPassword ) {
     return next(new AppError("All fields are mendotary !", 404));
   }
-  if (oldPassword === newPassword) {
-    return next(new AppError("Same as old password  ! ", 404));
-  }
 
-  const user = User.findById(id);
+  const user = await User.findById(id).select("+password");
+
   if (!user) {
     return next(new AppError("User doen't exist !", 400));
   }
 
   const isPasswordValid = await user.comparePassword(oldPassword);
+
   if (!isPasswordValid) {
     return next(new AppError("Incorrect old password !", 400));
   }
-
   user.password = newPassword;
+
   await user.save();
 
-  user.password = undefined;
-
-  return res.send(200).json({
-    success: false,
+  return res.status(200).json({
+    success: true,
     message: "Password changed sucessfully",
   });
 };
 
 const updateProfile = async (req, res, next) => {
-  const { fullName } = req.body;
+  const newFullName = req.body?.fullName;
   const id = req.user.id;
-
   const user = await User.findById(id);
   if (!user) {
     return next(new AppError("User doesn't exist !", 404));
   }
-  if (req.fullName) {
-    user.fullName = fullName;
+  if (newFullName) {
+    user.fullName = newFullName;
   }
   if (req.file) {
     await cloudinary.v2.uploader.destroy(user.avatar.public_id);
     try {
       const result = await cloudinary.v2.uploader.upload(req.file.path, {
-        folder: "lms",
+        folder: "user",
         width: 250,
         height: 250,
-        gravity: "faces",
-        crop: fill,
       });
       if (result) {
         user.avatar.public_id = result.public_id;
@@ -265,12 +261,13 @@ const updateProfile = async (req, res, next) => {
         new AppError(`unable to save avatar : ${error.message}`, 500)
       );
     }
-    await user.save();
-    return res.status(200).json({
-      success : true,
-      message : "Your profile has been updated successfully"
-    })
   }
+
+  await user.save();
+  return res.status(200).json({
+    success: true,
+    message: "Your profile has been updated successfully"
+  })
 };
 
 export {

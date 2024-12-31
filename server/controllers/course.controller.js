@@ -41,14 +41,12 @@ const createCourse = async (req, res, next) => {
     if (!title || !description || !category || !createdBy) {
         return next(new AppError("All fields are required !", 400));
     }
-
     const course = await Course.create({
         title,
         description,
         category,
         createdBy,
     });
-
     if (!course) {
         return next(
             new AppError("Course couldn't be created ! please try Again ", 500)
@@ -164,8 +162,26 @@ const addLecturesToCourseById = async (req, res, next) => {
     }
 };
 
-
-
+const removeLectureFromCourseById = async (req, res, next) => {
+    try {
+        const { courseId, lectureId } = req.params;
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return next(new AppError("Course not found", 404));
+        }
+        course.lectures = course.lectures.filter(
+            (lecture) => lecture._id.toString() !== lectureId
+        );
+        course.noOfLectures = course.lectures.length;
+        await course.save();
+        res.status(200).json({
+            success: true,
+            message: "Lecture removed successfully"
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
 export {
     getAllCourses,
@@ -173,5 +189,6 @@ export {
     createCourse,
     updateCourse,
     removeCourse,
-    addLecturesToCourseById
+    addLecturesToCourseById,
+    removeLectureFromCourseById
 };
