@@ -1,24 +1,37 @@
 import { useNavigate } from "react-router-dom";
 
-function NotFound() {
+export function NotFound() {
+
     const navigate = useNavigate();
     return (
-        <div className="h-screen w-full flex flex-col justify-center items-center bg-[#0e1019]">
-            <h1 className="text-9xl font-extrabold text-white tracking-widest">
-                404
+      <>
+        <main className="grid h-[100vh] place-items-center bg-gray-900 px-6 py-24 sm:py-32 lg:px-8">
+          <div className="text-center">
+            <p className=" font-bold text-2xl text-orange-600">404</p>
+            <h1 className="mt-4 text-balance text-5xl font-semibold tracking-tight text-gray-100 sm:text-7xl">
+              Page not found
             </h1>
-            <div className=" bg-black text-white px-4 text-sm rounded rotate-12 absolute">
-                <p className="text-lg">Page not found ...</p>
+            <p className="mt-6 text-pretty text-lg font-medium text-white sm:text-xl/8">
+              Sorry, we couldn’t find the page you’re looking for.
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <a
+                onClick={() => navigate(-1)}
+                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
+              >
+                Go back page
+              </a>
+             <p>
+             <a className="text-sm font-semibold text-orange-600">
+                Contact support <span aria-hidden="true">&rarr;</span>
+              </a> { " "} <span className="text-sm font-semibold text-gray-400">www.lmsbygolu@gmail.com</span>
+             </p>
             </div>
-            <button className="mt-5">
-                <a className="relative inline-block text-sm font-medium text-[#FF6A3D] group active:text-yellow-500 focus:outline-none focus:ring">
-                    <span onClick={() => navigate(-1)} className="relative block px-8 py-3 bg-[#1A2238] border border-current">
-                        Go Back
-                    </span>
-                </a>
-            </button>
-        </div>
-    );
-}
+          </div>
+        </main>
+      </>
+    )
+  }
+  
 
 export default NotFound;
